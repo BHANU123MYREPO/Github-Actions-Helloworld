@@ -4,17 +4,37 @@ on:
   push:
     branches:
       - main  # Trigger the workflow on push to the main branch
+    paths:
+      - 'frontend/**'  # Trigger frontend job if changes happen in frontend folder
+      - 'backend/**'   # Trigger backend job if changes happen in backend folder
   pull_request:
     branches:
       - main  # Trigger on pull request targeting the main branch
+    paths:
+      - 'frontend/**'  # Trigger frontend job if changes happen in frontend folder
+      - 'backend/**'   # Trigger backend job if changes happen in backend folder
 
 jobs:
-  hello-world-job:
+  frontend-job:
+    if: |
+      contains(github.event.head_commit.message, 'frontend') ||
+      github.event_name == 'push' && (github.event.head_commit.modified | contains('frontend'))
     runs-on: ubuntu-latest  # Use the latest Ubuntu environment
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v2  # Checkout the repository
 
-      - name: Print Hello World
-        run: echo "Hello, World!"  # Prints "Hello, World!" to the console
+      - name: Run frontend specific tasks
+        run: echo "Changes detected in frontend. Running frontend job..."  # Placeholder for frontend-specific tasks
+
+  backend-job:
+    if: |
+      contains(github.event.head_commit.message, 'backend') ||
+      github.event_name == 'push' && (github.event.head_commit.modified | contains('backend'))
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2  # Checkout the repository
+
+      - name: Run backend specific tasks
+        run: echo "Changes detected in backend. Running backend job..."  # Placeholder for backend-specific tasks
