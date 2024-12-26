@@ -16,10 +16,8 @@ on:
 
 jobs:
   frontend-job:
-    if: |
-      contains(github.event.head_commit.message, 'frontend') ||
-      github.event_name == 'push' && (github.event.head_commit.modified | contains('frontend'))
     runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+    if: ${{ github.event_name == 'push' && (contains(github.event.head_commit.modified, 'frontend') || contains(github.event.head_commit.added, 'frontend')) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2  # Checkout the repository
@@ -28,10 +26,8 @@ jobs:
         run: echo "Changes detected in frontend. Running frontend job..."  # Placeholder for frontend-specific tasks
 
   backend-job:
-    if: |
-      contains(github.event.head_commit.message, 'backend') ||
-      github.event_name == 'push' && (github.event.head_commit.modified | contains('backend'))
     runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+    if: ${{ github.event_name == 'push' && (contains(github.event.head_commit.modified, 'backend') || contains(github.event.head_commit.added, 'backend')) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2  # Checkout the repository
